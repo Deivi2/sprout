@@ -15,6 +15,13 @@
       "when": 1720276094183,
       "tag": "0001_volatile_unicorn",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1720626462438,
+      "tag": "0002_first_lord_hawal",
+      "breakpoints": true
     }
   ]
 }
