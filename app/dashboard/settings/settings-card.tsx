@@ -31,7 +31,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useAction } from "next-safe-action/hooks";
 import { settings } from "@/server/actions/settings";
-// import { UploadButton } from "@/app/api/uploadthing/upload";
+import { UploadButton } from "@/app/api/uploadthing/uploadthing";
 
 type SettingsForm = {
   session: Session;
@@ -118,32 +118,32 @@ export default function SettingsCard(session: SettingsForm) {
                         alt="User Image"
                       />
                     )}
-                    {/* <UploadButton
+                    <UploadButton
                       className="scale-75 ut-button:ring-primary  ut-label:bg-red-50  ut-button:bg-primary/75  hover:ut-button:bg-primary/100 ut:button:transition-all ut-button:duration-500  ut-label:hidden ut-allowed-content:hidden"
                       endpoint="avatarUploader"
                       onUploadBegin={() => {
-                        setAvatarUploading(true)
+                        setAvatarUploading(true);
                       }}
                       onUploadError={(error) => {
                         form.setError("image", {
                           type: "validate",
                           message: error.message,
-                        })
-                        setAvatarUploading(false)
-                        return
+                        });
+                        setAvatarUploading(false);
+                        return;
                       }}
                       onClientUploadComplete={(res) => {
-                        form.setValue("image", res[0].url!)
-                        setAvatarUploading(false)
-                        return
+                        form.setValue("image", res[0].url!);
+                        setAvatarUploading(false);
+                        return;
                       }}
                       content={{
                         button({ ready }) {
-                          if (ready) return <div>Change Avatar</div>
-                          return <div>Uploading...</div>
+                          if (ready) return <div>Change Avatar</div>;
+                          return <div>Uploading...</div>;
                         },
                       }}
-                    /> */}
+                    />
                   </div>
                   <FormControl>
                     <Input

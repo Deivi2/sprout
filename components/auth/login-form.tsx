@@ -25,12 +25,12 @@ import { FormSuccess } from "./form-success";
 import { FormError } from "./form-error";
 import { useRouter } from "next/navigation";
 import { revalidatePath } from "next/cache";
-// import {
-//   InputOTP,
-//   InputOTPGroup,
-//   InputOTPSeparator,
-//   InputOTPSlot,
-// } from "@/components/ui/input-otp";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 
 export const LoginForm = () => {
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -51,7 +51,7 @@ export const LoginForm = () => {
       if (data?.success) {
         setSuccess(data.success);
       }
-      // if (data.twoFactor) setShowTwoFactor(true);
+      if (data?.twoFactor) setShowTwoFactor(true);
     },
   });
 
@@ -80,7 +80,7 @@ export const LoginForm = () => {
                         We&apos;ve sent you a two factor code to your email.
                       </FormLabel>
                       <FormControl>
-                        {/* <InputOTP
+                        <InputOTP
                           disabled={status === "executing"}
                           {...field}
                           maxLength={6}
@@ -93,7 +93,7 @@ export const LoginForm = () => {
                             <InputOTPSlot index={4} />
                             <InputOTPSlot index={5} />
                           </InputOTPGroup>
-                        </InputOTP> */}
+                        </InputOTP>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

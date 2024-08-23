@@ -33,42 +33,42 @@ export const emailSignIn = action
         const verificationToken = await generateEmailVerificationToken(
           existingUser?.email as string
         );
-        // await sendVerificationEmail(
-        //   verificationToken[0].email,
-        //   verificationToken[0].token
-        // );
+        await sendVerificationEmail(
+          verificationToken[0].email,
+          verificationToken[0].token
+        );
         return { success: "Confirmation Email Sent!" };
       }
 
-      //   if (existingUser.twoFactorEnabled && existingUser.email) {
-      //     if (code) {
-      //       const twoFactorToken = await getTwoFactorTokenByEmail(
-      //         existingUser.email
-      //       );
-      //       if (!twoFactorToken) {
-      //         return { error: "Invalid Token" };
-      //       }
-      //       if (twoFactorToken.token !== code) {
-      //         return { error: "Invalid Token" };
-      //       }
-      //       const hasExpired = new Date(twoFactorToken.expires) < new Date();
-      //       if (hasExpired) {
-      //         return { error: "Token has expired" };
-      //       }
-      //       await db
-      //         .delete(twoFactorTokens)
-      //         .where(eq(twoFactorTokens.id, twoFactorToken.id));
-      //     } else {
-      //       const token = await generateTwoFactorToken(existingUser.email);
+      if (existingUser.twoFactorEnabled && existingUser.email) {
+        if (code) {
+          const twoFactorToken = await getTwoFactorTokenByEmail(
+            existingUser.email
+          );
+          if (!twoFactorToken) {
+            return { error: "Invalid Token" };
+          }
+          if (twoFactorToken.token !== code) {
+            return { error: "Invalid Token" };
+          }
+          const hasExpired = new Date(twoFactorToken.expires) < new Date();
+          if (hasExpired) {
+            return { error: "Token has expired" };
+          }
+          await db
+            .delete(twoFactorTokens)
+            .where(eq(twoFactorTokens.id, twoFactorToken.id));
+        } else {
+          const token = await generateTwoFactorToken(existingUser.email);
 
-      //       if (!token) {
-      //         return { error: "Token not generated!" };
-      //       }
+          if (!token) {
+            return { error: "Token not generated!" };
+          }
 
-      //       await sendTwoFactorTokenByEmail(token[0].email, token[0].token);
-      //       return { twoFactor: "Two Factor Token Sent!" };
-      //     }
-      //   }
+          await sendTwoFactorTokenByEmail(token[0].email, token[0].token);
+          return { twoFactor: "Two Factor Token Sent!" };
+        }
+      }
 
       await signIn("credentials", {
         email,
@@ -76,7 +76,7 @@ export const emailSignIn = action
         redirectTo: "/",
       });
 
-      //   return { success: "User Signed In!" };
+      return { success: "User Signed In!" };
     } catch (error) {
       if (error instanceof AuthError) {
         switch (error.type) {
@@ -92,6 +92,4 @@ export const emailSignIn = action
       }
       throw error;
     }
-
-    return { success: email };
   });

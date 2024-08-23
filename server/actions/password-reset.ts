@@ -24,9 +24,9 @@ export const reset = action
     if (!passwordResetToken) {
       return { error: "Token not generated" };
     }
-    // await sendPasswordResetEmail(
-    //   passwordResetToken[0].email,
-    //   passwordResetToken[0].token
-    // );
+    await sendPasswordResetEmail(
+      passwordResetToken[0].email,
+      passwordResetToken[0].token
+    );
     return { success: "Reset Email Sent" };
   });
