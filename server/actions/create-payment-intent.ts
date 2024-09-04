@@ -21,7 +21,6 @@ export const createPaymentIntent = action
       automatic_payment_methods: {
         enabled: true,
       },
-
       metadata: {
         cart: JSON.stringify(cart),
       },

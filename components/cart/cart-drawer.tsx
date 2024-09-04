@@ -12,7 +12,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import CartItems from "./cart-items";
 import CartMessage from "./cart-message";
 import Payment from "./payment";
-// import OrderConfirmed from "./order-confirmed";
+import OrderConfirmed from "./order-confirmed";
 import CartProgress from "./cart-progress";
 
 export default function CartDrawer() {
@@ -45,7 +45,7 @@ export default function CartDrawer() {
         <div className="overflow-auto p-4">
           {checkoutProgress === "cart-page" && <CartItems />}
           {checkoutProgress === "payment-page" && <Payment />}
-          {/* {checkoutProgress === "confirmation-page" && <OrderConfirmed />} */}
+          {checkoutProgress === "confirmation-page" && <OrderConfirmed />}
         </div>
       </DrawerContent>
     </Drawer>

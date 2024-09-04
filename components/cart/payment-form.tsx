@@ -34,6 +34,9 @@ export default function PaymentForm({ totalPrice }: { totalPrice: number }) {
         clearCart();
       }
     },
+    onSettled() {
+      toast.dismiss();
+    },
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -60,6 +63,7 @@ export default function PaymentForm({ totalPrice }: { totalPrice: number }) {
         image: item.image,
       })),
     });
+
     if (data?.error) {
       setErrorMessage(data.error);
       setIsLoading(false);

@@ -5,6 +5,7 @@ import { createSafeActionClient } from "next-safe-action";
 import { auth } from "../auth";
 import { db } from "@/server";
 import { orderProduct, orders } from "../schema";
+import { revalidatePath } from "next/cache";
 
 const action = createSafeActionClient();
 
@@ -34,6 +35,8 @@ export const createOrder = action
           });
         }
       );
+
+      revalidatePath("/dashboard/orders");
       return { success: "Order has been added" };
     }
   );

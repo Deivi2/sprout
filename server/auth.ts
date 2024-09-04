@@ -14,25 +14,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db),
   secret: process.env.AUTH_SECRET,
   session: { strategy: "jwt" },
-  events: {
-    createUser: async ({ user }) => {
-      const stripe = new Stripe(process.env.STRIPE_SECRET!, {
-        apiVersion: "2024-06-20",
-      });
-
-      const customer = await stripe.customers.create({
-        email: user.email!,
-        name: user.name!,
-      });
-
-      await db
-        .update(users)
-        .set({ customerID: customer.id })
-        .where(eq(users.id, user.id!));
-    },
-  },
   callbacks: {
     async session({ session, token }) {
+      //set data from token to session to allow access in frontend auth() user
       if (session && token.sub) {
         session.user.id = token.sub;
       }
@@ -45,10 +29,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.email = token.email as string;
         session.user.isOAuth = token.isOAuth as boolean;
         session.user.image = token.image as string;
+        session.user.customerID = token.customerID as string;
       }
       return session;
     },
     async jwt({ token }) {
+      // set data to token
       if (!token.sub) return token;
       const existingUser = await db.query.users.findFirst({
         where: eq(users.id, token.sub),
@@ -64,6 +50,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       token.role = existingUser.role;
       token.isTwoFactorEnabled = existingUser.twoFactorEnabled;
       token.image = existingUser.image;
+      token.customerID = existingUser.customerID;
       return token;
     },
   },
@@ -91,10 +78,31 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           if (!user || !user.password) return null;
 
           const passwordMatch = await bcrypt.compare(password, user.password);
-          if (passwordMatch) return user;
+
+          if (passwordMatch) {
+            //Add stripe customer id to user if it not exists
+            if (user && !user.customerID) await addStripeCustomerId(user);
+            return user;
+          }
         }
         return null;
       },
     }),
   ],
 });
+
+async function addStripeCustomerId(user: any) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET!, {
+    apiVersion: "2024-06-20",
+  });
+
+  const customer = await stripe.customers.create({
+    email: user.email!,
+    name: user.name!,
+  });
+
+  await db
+    .update(users)
+    .set({ customerID: customer.id })
+    .where(eq(users.id, user.id!));
+}
